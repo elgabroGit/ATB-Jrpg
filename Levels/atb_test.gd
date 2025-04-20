@@ -213,11 +213,10 @@ func _handle_defence_action(actor: Unit) -> void:
 # Gestione dell'azione di skill
 func _handle_skill_action(actor: Unit, target: Unit, values) -> void:
 	var skill: Skill = values
-	var _damage: float = skill.damage
 	actor.mp = max(actor.mp - skill.mp_cost, 0.0)
 	actor.stop_idle()
 	actor.play_animation(skill.animation)
-	actor.target_hitted.connect(Callable(target, "react_to_magic_hit").bind(_damage))
+	actor.target_hitted.connect(Callable(target, "react_to_magic_hit").bind(skill.damage, skill.react_animation))
 	await actor.animation_player.animation_finished
 	actor.target_hitted.disconnect(Callable(target, "react_to_magic_hit"))
 	actor.start_battle_idle()
@@ -226,8 +225,7 @@ func _handle_skill_action(actor: Unit, target: Unit, values) -> void:
 func _handle_attack_action(actor: Unit, target: Unit) -> void:
 	actor.stop_idle()
 	actor.start_run()
-	var _damage = actor.strength
-	actor.target_hitted.connect(Callable(target, "react_to_hit").bind(_damage))
+	actor.target_hitted.connect(Callable(target, "react_to_hit").bind(actor.strength))
 	await actor.move_to(target.attack_spot.global_position)
 	await actor.start_attack()
 	actor.start_run()

@@ -139,8 +139,8 @@ func react_to_hit(damage: float) -> void:
 	start_battle_idle()
 	hp -= max(damage - defense, 1.0)
 
-func react_to_magic_hit(damage: float) -> void:
-	play_animation("battle_react_magic")
+func react_to_magic_hit(damage: float, animation: String) -> void:
+	play_animation(animation)
 	await animation_player.animation_finished
 	start_battle_idle()
 	hp -= max(damage - defense, 1.0)
