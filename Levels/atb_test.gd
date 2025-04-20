@@ -208,10 +208,12 @@ func _handle_skill_action(actor: Unit, target: Unit, values) -> void:
 	var _damage: float = skill.damage + actor.spell_power
 	actor.mp = max(actor.mp - skill.mp_cost, 0.0)
 	actor.stop_idle()
+	await actor.look_to(target.attack_spot.global_position)
 	actor.play_animation(skill.animation)
 	actor.target_hitted.connect(Callable(target, "react_to_magic_hit").bind(_damage, skill.react_animation))
 	await actor.animation_player.animation_finished
 	actor.target_hitted.disconnect(Callable(target, "react_to_magic_hit"))
+	await actor.look_back()
 	actor.start_battle_idle()
 
 # Gestione dell'azione di attacco
@@ -320,12 +322,12 @@ func update_party_hud() -> void:
 	
 	for unit:Unit in party:
 		var unit_info: CharacterInfo = character_info.instantiate()
-		
 		unit_info.character_name_text = unit.unit_name
-		unit_info.hp_label_text = str(unit.hp)
-		unit_info.hp_max_label_text = str(unit.max_hp)
+		unit_info.hp_label_text = str(int(unit.hp))
+		unit_info.hp_max_label_text = str(int(unit.max_hp))
+		unit_info.mp_label_text = str(int(unit.mp))
+		unit_info.mp_max_label_text = str(int(unit.max_mp))
 		unit_info.progress_bar_value = unit.atb
-		
 		party_hud.add_child(unit_info)
 
 func update_values(new_values):

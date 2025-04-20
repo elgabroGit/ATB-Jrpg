@@ -153,6 +153,13 @@ func react_to_magic_hit(damage: float, animation: String) -> void:
 	hp -= max(damage - spell_defense, 1.0)
 
 ## --- MOVIMENTO ---
+func look_to(target: Vector3) -> void:
+	look_at(target, Vector3.UP)
+	rotate_y(PI)
+	
+func look_back() -> void:
+	global_rotation = original_rotation
+
 func move_to(target: Vector3) -> void:
 	var tween: Tween = get_tree().create_tween()
 	original_position = self.global_position

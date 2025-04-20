@@ -1,3 +1,4 @@
+CharacterInfo
 MarginContainer
 Panel
 Camera2D
@@ -12,4 +13,3 @@ HBoxContainer
 Control
 VBoxContainer
 Timer
-ItemList
