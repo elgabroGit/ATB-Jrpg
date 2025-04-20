@@ -1,0 +1,280 @@
+[gd_scene load_steps=9 format=3 uid="uid://dp2jyxwg8jyua"]
+
+[ext_resource type="PackedScene" uid="uid://ds18732su6wes" path="res://Characters/Player.tscn" id="1_by263"]
+[ext_resource type="Script" uid="uid://dw5dkj0sklp58" path="res://Levels/atb_test.gd" id="1_rjq0v"]
+[ext_resource type="Script" uid="uid://bdlehcl3lidfq" path="res://EnemyUnit.gd" id="3_djt3n"]
+[ext_resource type="Script" uid="uid://c4j46qhjybeu0" path="res://Levels/camera_manager.gd" id="4_yj5mf"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rjq0v"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_djt3n"]
+sky_material = SubResource("ProceduralSkyMaterial_rjq0v")
+
+[sub_resource type="Environment" id="Environment_yj5mf"]
+background_mode = 2
+sky = SubResource("Sky_djt3n")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_djt3n"]
+
+[node name="BattleArea" type="Node3D"]
+script = ExtResource("1_rjq0v")
+
+[node name="Pavimento" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+use_collision = true
+size = Vector3(20, 0.5, 20)
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+environment = SubResource("Environment_yj5mf")
+
+[node name="PartyPosition" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 7)
+
+[node name="Player" parent="PartyPosition" instance=ExtResource("1_by263")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.01849, 0, 0)
+unit_name = "Cloud"
+max_haste = 40.0
+max_strength = 300.0
+
+[node name="Player2" parent="PartyPosition" instance=ExtResource("1_by263")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.74104, 0, 4.76837e-07)
+unit_name = "Iginio Massari"
+max_haste = 30.0
+max_strength = 300.0
+
+[node name="EnemiesPosition" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7)
+
+[node name="Enemy" parent="EnemiesPosition" instance=ExtResource("1_by263")]
+script = ExtResource("3_djt3n")
+unit_name = "Sephirot"
+max_haste = 50.0
+max_strength = 10.0
+max_defense = 10.0
+max_hp = 100.0
+atb = 0.0
+
+[node name="Enemy2" parent="EnemiesPosition" instance=ExtResource("1_by263")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.96357, 0, 0)
+script = ExtResource("3_djt3n")
+unit_name = "RAMONO"
+max_haste = 50.0
+max_strength = 10.0
+max_defense = 10.0
+max_hp = 100.0
+atb = 0.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_djt3n")
+
+[node name="Control" type="Control" parent="CanvasLayer/Control/Panel"]
+anchors_preset = 0
+offset_top = 108.0
+offset_right = 1147.0
+offset_bottom = 183.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/Panel/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.261552
+anchor_bottom = 0.52
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 40
+text = "Sequenziale"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/Panel/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.307759
+anchor_right = 0.569311
+anchor_bottom = 0.52
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 16
+metadata/_edit_use_anchors_ = true
+
+[node name="Control2" type="Control" parent="CanvasLayer/Control/Panel"]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 174.0
+offset_right = 1147.0
+offset_bottom = 249.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/Panel/Control2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.261552
+anchor_bottom = 0.52
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 40
+text = "Esecuzione:"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/Panel/Control2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.307759
+anchor_right = 0.569311
+anchor_bottom = 0.52
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="Control3" type="Control" parent="CanvasLayer/Control/Panel"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/Panel/Control3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.261552
+anchor_bottom = 0.52
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 40
+text = "Ready"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/Panel/Control3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 6.55
+anchor_top = 0.2
+anchor_right = 6.81155
+anchor_bottom = 0.72
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="Control4" type="Control" parent="CanvasLayer/Control/Panel"]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 57.0
+offset_right = 1147.0
+offset_bottom = 132.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/Panel/Control4"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.261552
+anchor_bottom = 0.52
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 40
+text = "SELEZIONEPLAYER"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/Panel/Control4"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.307759
+anchor_right = 0.569311
+anchor_bottom = 0.52
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="CharacterName" type="Label" parent="CanvasLayer/Control/Panel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -203.0
+offset_right = 227.0
+offset_bottom = -180.0
+grow_vertical = 0
+
+[node name="ChoiceBox" type="VBoxContainer" parent="CanvasLayer/Control/Panel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -171.0
+offset_right = 280.0
+grow_vertical = 0
+
+[node name="AttackButton" type="Button" parent="CanvasLayer/Control/Panel/ChoiceBox"]
+layout_mode = 2
+text = "Attacca"
+
+[node name="DefendButton" type="Button" parent="CanvasLayer/Control/Panel/ChoiceBox"]
+layout_mode = 2
+text = "Difendi"
+
+[node name="SkillButton" type="Button" parent="CanvasLayer/Control/Panel/ChoiceBox"]
+layout_mode = 2
+text = "Abilitá"
+
+[node name="ItemButton" type="Button" parent="CanvasLayer/Control/Panel/ChoiceBox"]
+layout_mode = 2
+text = "Oggetti
+"
+
+[node name="FleeButton" type="Button" parent="CanvasLayer/Control/Panel/ChoiceBox"]
+layout_mode = 2
+text = "Fuga
+"
+
+[node name="TargetBox" type="ItemList" parent="CanvasLayer/Control/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -176.0
+offset_right = 140.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+auto_width = true
+auto_height = true
+
+[node name="Cinema" type="Node" parent="."]
+script = ExtResource("4_yj5mf")
+
+[node name="MainCamera" type="Camera3D" parent="Cinema"]
+transform = Transform3D(-3.09086e-08, -0.707107, 0.707107, -3.09086e-08, 0.707107, 0.707107, -1, 0, -4.37114e-08, 6.69021, 7.34457, -0.118853)
+
+[node name="RotateCameraPivot" type="Node3D" parent="Cinema"]
+
+[node name="RotateCamera" type="Camera3D" parent="Cinema/RotateCameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.960011, 0.279963, 0, -0.279963, 0.960011, 0, 6.14782, 9.69629)
+
+[editable path="EnemiesPosition/Enemy"]
+[editable path="EnemiesPosition/Enemy2"]

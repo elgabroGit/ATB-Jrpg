@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://dl8f3pk3dtap3"]
+
+[ext_resource type="Script" uid="uid://ckydw4vy8o7a7" path="res://UI/character_info.gd" id="1_7rqwx"]
+
+[node name="CharacterInfo" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_vertical = 3
+script = ExtResource("1_7rqwx")
+
+[node name="CharacterName" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 16.0
+offset_top = -39.0
+offset_right = 90.0
+offset_bottom = -15.0
+grow_vertical = 2
+text = "BASE"
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 17.0
+offset_top = -9.5
+offset_right = 314.0
+offset_bottom = 17.5
+grow_vertical = 2
+show_percentage = false
+
+[node name="HpLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 147.0
+offset_top = -39.0
+offset_right = 192.0
+offset_bottom = -16.0
+grow_vertical = 2
+text = "1000"
+
+[node name="HpMaxLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 193.0
+offset_top = -39.0
+offset_right = 238.0
+offset_bottom = -16.0
+grow_vertical = 2
+text = "1000"

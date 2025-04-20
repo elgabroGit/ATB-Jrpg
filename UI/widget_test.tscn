@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://bt3ivcmcfp5er"]
+
+[ext_resource type="Script" uid="uid://v1vmmh66hc8x" path="res://UI/widget_test.gd" id="1_r7j8u"]
+
+[node name="WidgetTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_r7j8u")
+
+[node name="CharacterName" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
