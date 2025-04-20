@@ -508,3 +508,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.52483)
 transform = Transform3D(1.55, 0, 0, 0, -6.77527e-08, -1.55, 0, 1.55, -6.77527e-08, 0, 0.231085, 0)
 visible = false
 texture = ExtResource("3_1ju47")
+
+[node name="HealthPivot" type="Node3D" parent="."]

@@ -22,6 +22,8 @@ var _defending: bool = false
 @export var max_haste: float = 10.0
 @export var max_strength: float = 10.0
 @export var max_defense: float = 10.0
+@export var max_spell_power: float = 10.0
+@export var max_spell_defense: float = 10.0
 @export var max_hp: float = 100.0
 @export var max_mp: float = 50.0
 
@@ -38,6 +40,9 @@ var hp: float:
 			CHARACTER_STATE = "KO"
 			unit_died.emit()
 var _hp: float
+var spell_power: float
+var spell_defense: float
+
 
 @export var moveset: Array[Skill]
 
@@ -86,6 +91,8 @@ func setup_statistics() -> void:
 	defense = max_defense
 	hp = max_hp
 	mp = max_mp
+	spell_power = max_spell_power
+	spell_defense = max_spell_defense
 
 ## --- METODI ASTRATTI ---
 func setup_unit() -> void:
@@ -143,7 +150,7 @@ func react_to_magic_hit(damage: float, animation: String) -> void:
 	play_animation(animation)
 	await animation_player.animation_finished
 	start_battle_idle()
-	hp -= max(damage - defense, 1.0)
+	hp -= max(damage - spell_defense, 1.0)
 
 ## --- MOVIMENTO ---
 func move_to(target: Vector3) -> void:

@@ -11,3 +11,7 @@ res://Skills/water_ball.tres
 res://UI/character_info.gd
 res://Characters/Dummy/dummy.gd
 res://Characters/Dummy/Animations/battle_cast_magic.res
+res://Shaders/spell.gdshader
+res://Shaders/spell.gd
+res://Levels/TESTSHADER.tscn
+res://Levels/sprite_2d.gd

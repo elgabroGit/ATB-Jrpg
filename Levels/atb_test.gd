@@ -11,10 +11,6 @@ var sequentialQueue: Array
 var executeQueue: Array
 
 # === Collegamenti UI ===
-@onready var sequential_label: Label = $CanvasLayer/Control/Panel/Control/Label2
-@onready var execute_label: Label = $CanvasLayer/Control/Panel/Control2/Label2
-@onready var ready_label: Label = $CanvasLayer/Control/Panel/Control3/Label2
-@onready var aps_label: Label = $CanvasLayer/Control/Panel/Control4/Label2
 @onready var attack_button: Button = $CanvasLayer/Control/Panel/ChoiceBox/AttackButton
 @onready var defend_button: Button = $CanvasLayer/Control/Panel/ChoiceBox/DefendButton
 @onready var skill_button: Button = $CanvasLayer/Control/Panel/ChoiceBox/SkillButton
@@ -23,7 +19,8 @@ var executeQueue: Array
 @onready var choice_box: VBoxContainer = $CanvasLayer/Control/Panel/ChoiceBox
 @onready var target_box: ItemList = $CanvasLayer/Control/Panel/TargetBox
 @onready var skill_box = $CanvasLayer/Control/Panel/SkillBox
-@onready var character_name: Label = $CanvasLayer/Control/Panel/CharacterName
+@onready var character_panel: Panel = $CanvasLayer/Control/Panel/CharacterPanel
+@onready var character_name: Label = $CanvasLayer/Control/Panel/CharacterPanel/CharacterName
 @onready var party_hud: VBoxContainer = $CanvasLayer/Control/Panel/PartyHUD/VBoxContainer
 var character_info = preload("res://UI/character_info.tscn")
 
@@ -52,6 +49,7 @@ func _ready():
 	choice_box.hide()
 	target_box.hide()
 	skill_box.hide()
+	character_panel.hide()
 	connect("execute_queue_ready", Callable(self, "_on_execute_queue_ready"))
 	connect("atb_reset_for", Callable(self, "_on_atb_reset_for"))
 	target_box.item_clicked.connect(Callable(self, "_on_target_box_item_clicked"))
@@ -70,10 +68,6 @@ func _ready():
 func _process(delta: float) -> void:
 	check_dead_unit()
 	check_win_condition()
-	sequential_label.text = str(sequentialQueue)
-	execute_label.text = str(executeQueue)
-	ready_label.text = str(readyQueue)
-	aps_label.text = str(actionPlayerSelectionQueue)
 	update_party_hud()
 	loop_atb(delta)
 
@@ -108,17 +102,16 @@ func loop_aps_queue() -> void:
 		if actionPlayerSelectionQueue.size() >= 1:
 			var actor: Unit = actionPlayerSelectionQueue[0]
 			selected_actor = actor
-			print("Cosa deve fare ", actor.unit_name, "?")
 			choice_box.show()
+			character_panel.show()
 			character_name.text = actor.unit_name
 			var choice = await action_type_selected;
 			await aps_input_ready
-			print(actor.unit_name, " ha scelto ", choice)
 			actionPlayerSelectionQueue.pop_front()
 			add_in_sequential_queue({"actor": actor, "target": selected_target, "type": choice, "values": selected_values})
 			choice_box.hide()
 			target_box.hide()
-			character_name.text = ""
+			character_panel.hide()
 
 # Mostra i bersagli selezionabili per il giocatore
 func show_targets() -> void:
@@ -191,7 +184,6 @@ func _on_execute_queue_ready() -> void:
 		add_in_ready_queue(actor)
 		return
 
-	print("Eseguo azione di ", actor.unit_name, " che è ", action_type, ".")
 	match action_type:
 		"attack":
 			await _handle_attack_action(actor, target)
@@ -213,10 +205,11 @@ func _handle_defence_action(actor: Unit) -> void:
 # Gestione dell'azione di skill
 func _handle_skill_action(actor: Unit, target: Unit, values) -> void:
 	var skill: Skill = values
+	var _damage: float = skill.damage + actor.spell_power
 	actor.mp = max(actor.mp - skill.mp_cost, 0.0)
 	actor.stop_idle()
 	actor.play_animation(skill.animation)
-	actor.target_hitted.connect(Callable(target, "react_to_magic_hit").bind(skill.damage, skill.react_animation))
+	actor.target_hitted.connect(Callable(target, "react_to_magic_hit").bind(_damage, skill.react_animation))
 	await actor.animation_player.animation_finished
 	actor.target_hitted.disconnect(Callable(target, "react_to_magic_hit"))
 	actor.start_battle_idle()
@@ -238,7 +231,6 @@ func _handle_attack_action(actor: Unit, target: Unit) -> void:
 func _on_atb_reset_for(actor: Unit) -> void:
 	actor.reset_atb()
 	actor.unlock_atb()
-	print("ATB RESETTATE PER ", actor.unit_name)
 
 # === Utility ===
 
