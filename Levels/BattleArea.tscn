@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dp2jyxwg8jyua"]
+[gd_scene load_steps=13 format=3 uid="uid://dp2jyxwg8jyua"]
 
 [ext_resource type="PackedScene" uid="uid://ds18732su6wes" path="res://Characters/Player.tscn" id="1_by263"]
 [ext_resource type="Script" uid="uid://dw5dkj0sklp58" path="res://Levels/atb_test.gd" id="1_rjq0v"]
@@ -21,12 +21,6 @@ background_mode = 2
 sky = SubResource("Sky_djt3n")
 tonemap_mode = 2
 glow_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_22ls6"]
-albedo_color = Color(1, 0, 0, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mc8pu"]
-albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_djt3n"]
 
@@ -75,18 +69,12 @@ unit_name = "Sephirot"
 max_haste = 50.0
 max_strength = 20.0
 
-[node name="HumanBaseModel_001" parent="EnemiesPosition/Enemy/Model/DummyImproved/Armature/Skeleton3D" index="0"]
-surface_material_override/0 = SubResource("StandardMaterial3D_22ls6")
-
 [node name="Enemy2" parent="EnemiesPosition" instance=ExtResource("1_by263")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.96357, 0, 0)
 script = ExtResource("3_djt3n")
 unit_name = "RAMONO"
 max_haste = 50.0
 max_strength = 40.0
-
-[node name="HumanBaseModel_001" parent="EnemiesPosition/Enemy2/Model/DummyImproved/Armature/Skeleton3D" index="0"]
-surface_material_override/0 = SubResource("StandardMaterial3D_mc8pu")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

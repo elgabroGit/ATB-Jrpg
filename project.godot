@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Sandbox"
+config/name="ATBProject"
+config/tags=PackedStringArray("3d", "atb", "jrpg")
 run/main_scene="uid://dp2jyxwg8jyua"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
