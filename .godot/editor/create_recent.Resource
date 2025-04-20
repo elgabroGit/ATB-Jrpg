@@ -1,2 +1,4 @@
+Skill
+Resource
 AnimationLibrary
 StandardMaterial3D

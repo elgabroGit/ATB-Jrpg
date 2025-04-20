@@ -1,5 +1,13 @@
 res://Levels/BattleArea.tscn
+res://Levels/atb_test.gd
 res://Levels/ATBTest.tscn
 res://Characters/Player.tscn
 res://UI/character_info.tscn
 res://UI/widget_test.tscn
+res://Unit.gd
+res://Skills/fire_ball.tres
+res://Skills/skill.gd
+res://Skills/water_ball.tres
+res://UI/character_info.gd
+res://Characters/Dummy/dummy.gd
+res://Characters/Dummy/Animations/battle_cast_magic.res

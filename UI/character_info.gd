@@ -15,4 +15,3 @@ func _ready() -> void:
 	hp_label.text = hp_label_text
 	hp_max_label.text = hp_max_label_text
 	progress_bar.value = progress_bar_value
-	print(progress_bar_value)

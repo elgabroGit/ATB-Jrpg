@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://dp2jyxwg8jyua"]
+[gd_scene load_steps=12 format=3 uid="uid://dp2jyxwg8jyua"]
 
 [ext_resource type="PackedScene" uid="uid://ds18732su6wes" path="res://Characters/Player.tscn" id="1_by263"]
 [ext_resource type="Script" uid="uid://dw5dkj0sklp58" path="res://Levels/atb_test.gd" id="1_rjq0v"]
 [ext_resource type="Script" uid="uid://bdlehcl3lidfq" path="res://EnemyUnit.gd" id="3_djt3n"]
+[ext_resource type="Script" uid="uid://c2gho0vch6y0x" path="res://Skills/skill.gd" id="3_oepju"]
+[ext_resource type="Resource" uid="uid://to0beeny7py6" path="res://Skills/fire_ball.tres" id="4_22ls6"]
 [ext_resource type="Script" uid="uid://c4j46qhjybeu0" path="res://Levels/camera_manager.gd" id="4_yj5mf"]
+[ext_resource type="Resource" uid="uid://p60krt1soeox" path="res://Skills/water_ball.tres" id="5_22ls6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rjq0v"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -45,12 +48,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.01849, 0, 0)
 unit_name = "Cloud"
 max_haste = 40.0
 max_strength = 300.0
+max_mp = 20.0
+moveset = Array[ExtResource("3_oepju")]([ExtResource("4_22ls6")])
 
 [node name="Player2" parent="PartyPosition" instance=ExtResource("1_by263")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.74104, 0, 4.76837e-07)
 unit_name = "Iginio Massari"
 max_haste = 30.0
 max_strength = 300.0
+moveset = Array[ExtResource("3_oepju")]([ExtResource("5_22ls6")])
 
 [node name="EnemiesPosition" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7)
@@ -259,6 +265,24 @@ grow_vertical = 0
 auto_width = true
 auto_height = true
 
+[node name="SkillBox" type="ItemList" parent="CanvasLayer/Control/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -176.0
+offset_right = 140.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+auto_width = true
+auto_height = true
+item_count = 1
+fixed_icon_size = Vector2i(10, 10)
+
 [node name="PartyHUD" type="Panel" parent="CanvasLayer/Control/Panel"]
 layout_mode = 1
 anchors_preset = 3
@@ -290,6 +314,3 @@ transform = Transform3D(-3.09086e-08, -0.707107, 0.707107, -3.09086e-08, 0.70710
 
 [node name="RotateCamera" type="Camera3D" parent="Cinema/RotateCameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.960011, 0.279963, 0, -0.279963, 0.960011, 0, 6.14782, 9.69629)
-
-[editable path="EnemiesPosition/Enemy"]
-[editable path="EnemiesPosition/Enemy2"]

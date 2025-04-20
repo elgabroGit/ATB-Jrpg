@@ -23,10 +23,12 @@ var _defending: bool = false
 @export var max_strength: float = 10.0
 @export var max_defense: float = 10.0
 @export var max_hp: float = 100.0
+@export var max_mp: float = 50.0
 
 var haste: float
 var strength: float
 var defense: float
+var mp: float
 var hp: float:
 	get:
 		return _hp
@@ -36,6 +38,8 @@ var hp: float:
 			CHARACTER_STATE = "KO"
 			unit_died.emit()
 var _hp: float
+
+@export var moveset: Array[Skill]
 
 ## --- ATB ---
 @export var atb: float:
@@ -81,6 +85,7 @@ func setup_statistics() -> void:
 	strength = max_strength
 	defense = max_defense
 	hp = max_hp
+	mp = max_mp
 
 ## --- METODI ASTRATTI ---
 func setup_unit() -> void:
@@ -130,6 +135,12 @@ func start_defend() -> void:
 
 func react_to_hit(damage: float) -> void:
 	play_animation("battle_react_hit")
+	await animation_player.animation_finished
+	start_battle_idle()
+	hp -= max(damage - defense, 1.0)
+
+func react_to_magic_hit(damage: float) -> void:
+	play_animation("battle_react_magic")
 	await animation_player.animation_finished
 	start_battle_idle()
 	hp -= max(damage - defense, 1.0)

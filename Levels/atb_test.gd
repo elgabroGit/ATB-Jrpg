@@ -22,6 +22,7 @@ var executeQueue: Array
 @onready var flee_button: Button = $CanvasLayer/Control/Panel/ChoiceBox/FleeButton
 @onready var choice_box: VBoxContainer = $CanvasLayer/Control/Panel/ChoiceBox
 @onready var target_box: ItemList = $CanvasLayer/Control/Panel/TargetBox
+@onready var skill_box = $CanvasLayer/Control/Panel/SkillBox
 @onready var character_name: Label = $CanvasLayer/Control/Panel/CharacterName
 @onready var party_hud: VBoxContainer = $CanvasLayer/Control/Panel/PartyHUD/VBoxContainer
 var character_info = preload("res://UI/character_info.tscn")
@@ -41,6 +42,8 @@ var party_alive: Array
 var enemies_alive: Array
 var selected_target: Unit
 var selected_actor: Unit
+var selected_values
+
 
 # === Funzione iniziale ===
 func _ready():
@@ -48,9 +51,11 @@ func _ready():
 	enemies = get_enemies()
 	choice_box.hide()
 	target_box.hide()
+	skill_box.hide()
 	connect("execute_queue_ready", Callable(self, "_on_execute_queue_ready"))
 	connect("atb_reset_for", Callable(self, "_on_atb_reset_for"))
 	target_box.item_clicked.connect(Callable(self, "_on_target_box_item_clicked"))
+	skill_box.item_clicked.connect(Callable(self, "_on_skill_box_item_clicked"))
 	attack_button.pressed.connect(Callable(self, "_on_attack_button_pressed"))
 	defend_button.pressed.connect(Callable(self, "_on_defend_button_pressed"))
 	skill_button.pressed.connect(Callable(self, "_on_skill_button_pressed"))
@@ -69,7 +74,7 @@ func _process(delta: float) -> void:
 	execute_label.text = str(executeQueue)
 	ready_label.text = str(readyQueue)
 	aps_label.text = str(actionPlayerSelectionQueue)
-	temp_progress_bar()
+	update_party_hud()
 	loop_atb(delta)
 
 # === Gestione ATB ===
@@ -94,7 +99,7 @@ func loop_ready_queue() -> void:
 				"party":
 					add_in_aps_queue(actor)
 				"enemies":
-					add_in_sequential_queue({"actor": actor, "target": enemy_pick_target(), "type": "attack"})
+					add_in_sequential_queue({"actor": actor, "target": enemy_pick_target(), "type": "attack", "values": selected_values})
 
 # Coda per la selezione dell'azione del giocatore
 func loop_aps_queue() -> void:
@@ -110,7 +115,7 @@ func loop_aps_queue() -> void:
 			await aps_input_ready
 			print(actor.unit_name, " ha scelto ", choice)
 			actionPlayerSelectionQueue.pop_front()
-			add_in_sequential_queue({"actor": actor, "target": selected_target, "type": choice})
+			add_in_sequential_queue({"actor": actor, "target": selected_target, "type": choice, "values": selected_values})
 			choice_box.hide()
 			target_box.hide()
 			character_name.text = ""
@@ -118,11 +123,24 @@ func loop_aps_queue() -> void:
 # Mostra i bersagli selezionabili per il giocatore
 func show_targets() -> void:
 	target_box.clear()
+	skill_box.hide()
 	
 	for enemy: Unit in enemies:
 		if !enemy.is_dead():
 			target_box.add_item(enemy.unit_name)
 	target_box.show()
+
+func show_skills() -> void:
+	skill_box.clear()
+	target_box.hide()
+	
+	for move: Skill in selected_actor.moveset:
+		var can_use: bool = true
+		if move.mp_cost > selected_actor.mp:
+			can_use = false
+		var new_skill_index = skill_box.add_item(move.skill_name, move.icon, can_use)
+		skill_box.set_item_disabled(new_skill_index, !can_use)
+	skill_box.show()
 
 # Coda delle azioni da eseguire in ordine
 func loop_sequential_queue() -> void:
@@ -166,6 +184,7 @@ func _on_execute_queue_ready() -> void:
 	var actor: Unit = action["actor"]
 	var target: Unit = action["target"]
 	var action_type: String = action["type"]
+	var values = action["values"]
 
 	if !is_instance_valid(target):
 		executeQueue.pop_front()
@@ -177,9 +196,9 @@ func _on_execute_queue_ready() -> void:
 		"attack":
 			await _handle_attack_action(actor, target)
 		"defence":
-			await _handle_defence_action(actor)
+			_handle_defence_action(actor)
 		"skill":
-			await _handle_skill_action(actor, target)
+			await _handle_skill_action(actor, target, values)
 		_:
 			print("Tipo azione sconosciuta: ", action_type)
 
@@ -192,10 +211,15 @@ func _handle_defence_action(actor: Unit) -> void:
 	actor.start_defend()
 
 # Gestione dell'azione di skill
-func _handle_skill_action(actor: Unit, target: Unit) -> void:
+func _handle_skill_action(actor: Unit, target: Unit, values) -> void:
+	var skill: Skill = values
+	var _damage: float = skill.damage
+	actor.mp = max(actor.mp - skill.mp_cost, 0.0)
 	actor.stop_idle()
-	actor.start_magic()
+	actor.play_animation(skill.animation)
+	actor.target_hitted.connect(Callable(target, "react_to_magic_hit").bind(_damage))
 	await actor.animation_player.animation_finished
+	actor.target_hitted.disconnect(Callable(target, "react_to_magic_hit"))
 	actor.start_battle_idle()
 
 # Gestione dell'azione di attacco
@@ -266,13 +290,17 @@ func enemy_pick_target() -> Unit:
 	return possible_choises.pick_random()
 
 # Gestione clic su bersaglio dalla lista
-func _on_target_box_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+func _on_target_box_item_clicked(index: int, _at_position: Vector2, _mouse_button_index: int) -> void:
 	var alive_enemies: Array[Unit]
 	for unit in enemies:
 		if !unit.is_dead():
 			alive_enemies.append(unit)
 	selected_target = alive_enemies[index]
 	aps_input_ready.emit()
+	
+func _on_skill_box_item_clicked(index: int, _at_position: Vector2, _mouse_button_index: int) -> void:
+	selected_values = selected_actor.moveset[index]
+	show_targets()
 	
 func _on_attack_button_pressed() -> void:
 	action_type_selected.emit("attack")
@@ -286,7 +314,7 @@ func _on_defend_button_pressed() -> void:
 
 func _on_skill_button_pressed() -> void:
 	action_type_selected.emit("skill")
-	show_targets()
+	show_skills()
 	
 func _on_item_button_pressed() -> void:
 	action_type_selected.emit("item")
@@ -296,16 +324,19 @@ func _on_flee_button_pressed() -> void:
 	action_type_selected.emit("flee")
 	show_targets()
 	
-func temp_progress_bar() -> void:
+func update_party_hud() -> void:
 	for child in party_hud.get_children():
 		child.queue_free()
 	
 	for unit:Unit in party:
-		var character_info: CharacterInfo = character_info.instantiate()
+		var unit_info: CharacterInfo = character_info.instantiate()
 		
-		character_info.character_name_text = unit.unit_name
-		character_info.hp_label_text = str(unit.hp)
-		character_info.hp_max_label_text = str(unit.max_hp)
-		character_info.progress_bar_value = unit.atb
+		unit_info.character_name_text = unit.unit_name
+		unit_info.hp_label_text = str(unit.hp)
+		unit_info.hp_max_label_text = str(unit.max_hp)
+		unit_info.progress_bar_value = unit.atb
 		
-		party_hud.add_child(character_info)
+		party_hud.add_child(unit_info)
+
+func update_values(new_values):
+	selected_values = new_values
